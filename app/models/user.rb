@@ -5,4 +5,8 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
   has_many :friendships
   has_many :friends, through: :friendships, class_name: "User"
+
+  def friendship_to(user)
+    self.friendships.where(friend_id: user.id).first
+  end
 end

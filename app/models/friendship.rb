@@ -1,3 +1,8 @@
 class Friendship < ActiveRecord::Base
-	enum status: %w(none pending approved)
+	belongs_to :user
+	enum status: %w(enemies pending approved)
+
+  def from(user)
+    self.user_id == user.id
+  end
 end

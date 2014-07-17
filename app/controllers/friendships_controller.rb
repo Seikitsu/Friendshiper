@@ -1,41 +1,46 @@
 class FriendshipsController < ApplicationController
 
 	def create
-		# @friendship = current_user.friendships.build(params[:friendship])
-		# if @friendship.save
-		#   flash[:success] = "You sent friend request!"
-		#   redirect_to root_url
-		# else
-		#   flash[:error] = "Fatal error"
-		# end
-
-		@friendship = Friendship.new(params[:product])
-	    respond_to do |format|
-	      if @friendship.save
-	        format.html { redirect_to root_url, notice: "You sent friend request!" }
-	        format.json { render json: @friendship, status: :created, location: @friendship }
-	      else
-	        format.html { 
-	          flash.now[:notice]="Error!" 
-	        }
-	        format.json { render json: @friendship.errors, status: :unprocessable_entity}
-	      end
-	    end
+		@friendship = current_user.friendships.build(friendship_params)
+		@friendship.pending!
+    respond_to do |format|
+      if @friendship.save
+        format.html { redirect_to root_url, notice: "You sent friend request!" }
+        format.json { render json: @friendship, status: :created, location: @friendship }
+      else
+        format.html { 
+          flash.now[:notice]="Error!"
+        }
+        format.json { render json: @friendship.errors, status: :unprocessable_entity}
+      end
+    end
 	end
 
 	def update
-		@friendship = Friendship.find(params[:id])
-		if @friendship.update_attributes(params[:friendship])
-			flash[:success] = "You are now friends!"
-			redirect_to root_url
-		else
-			flash[:error] = "Fatal error"
-		end
+    friend = User.find(params[:id])
+
+    @friendship = current_user.friendship_to(friend) || friend.friendship_to(current_user)
+    @friendship.approved!
+    if @friendship.save
+      render json: @friendship, status: :created, location: @friendship
+    else
+      render json: @friendship.errors, status: :unprocessable_entity
+    end
 	end
 
 	def destroy
-		Friendship.find(params[:id]).destroy
-		flash[:success] = "You are not friends anymore!"
-		redirect_to root_url
+		friend = User.find(params[:id])
+    @friendship = current_user.friendship_to(friend) || friend.friendship_to(current_user)
+    if @friendship.destroy
+      render json: @friendship, status: :created, location: @friendship
+    else
+      render json: @friendship.errors, status: :unprocessable_entity
+    end
 	end
+
+	private
+
+	  def friendship_params
+	    params.require(:friendship).permit(:friend_id)
+	  end
 end

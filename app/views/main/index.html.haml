@@ -1,9 +1,22 @@
 #index-wrap
   = link_to "Logout", destroy_user_session_path, :method => :delete
   %h1 Users
-  %ul
+  %ul#user-friends{"data-user" => current_user.id}
     - @users.each do |user|
-      %li
-        = user.email
-        |
-        = link_to "Add friend", "#", class: "add-friend"
+      - if current_user != user
+        %li.user
+          = user.email
+          |
+          - friendship = user.friendship_to(current_user) || current_user.friendship_to(user)
+          - if friendship 
+            - if friendship.approved?
+              = link_to "Unfriend", "#", class: "destroy-friend", id: user.id
+            - elsif friendship.pending?
+              - if friendship.from current_user 
+                Friendship request sent
+              - else 
+                = link_to "Friendship request!", "#", class: "confirm-friend", id: user.id
+          - else
+            = link_to "Add friend", "#", class: "add-friend", id: user.id
+          %span
+              

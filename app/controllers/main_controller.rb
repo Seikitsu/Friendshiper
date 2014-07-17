@@ -3,6 +3,7 @@ class MainController < ApplicationController
 
 	def index
 		@users = User.all
+		@friendships = current_user.friendships
 	end
 
 end
