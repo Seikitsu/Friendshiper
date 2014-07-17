@@ -7,7 +7,7 @@ $ ->
     $.ajax({
       type: "POST",
       url: "/friendships",
-      data: { product: { user_id: 1, friend_id: 3} },
+      data: { friendship: { user_id: 1, friend_id: 3 } },
       success:(data) ->
         alert "Sent"
         return false
