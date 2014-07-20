@@ -1,5 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe Friendship, :type => :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  user1 = FactoryGirl.build(:user)
+  user2 = FactoryGirl.build(:user)
+  friendship = Friendship.create!(user_id: user1.id, friend_id: user2.id)
+  friendship.pending!
+  status = friendship.status
+  status.should == 'pending'
 end

@@ -7,6 +7,10 @@ class FriendshipsController < ApplicationController
       if @friendship.save
         format.html { redirect_to root_url, notice: "You sent friend request!" }
         format.json { render json: @friendship, status: :created, location: @friendship }
+        #sends notification
+        friend = User.find(@friendship.friend_id)
+        @notification = Notification.new(friend: friend.email)
+        NotificationMailer.notification_mailer(@notification).deliver
       else
         format.html { 
           flash.now[:notice]="Error!"

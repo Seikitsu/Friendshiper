@@ -1,0 +1,1 @@
+Hi, guy with email <%= @notification.friend %> wants to be friend with you!
