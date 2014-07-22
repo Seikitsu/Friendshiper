@@ -1,10 +1,11 @@
 require 'rails_helper'
 
-RSpec.describe "the signin process", :type => :feature do
+
+RSpec.describe "the signin process",:js => true, :type => :feature do
 
   user1 = FactoryGirl.create(:user)
   user2 = FactoryGirl.create(:user)
-  
+
   it "signs in" do
     visit '/users/sign_in'
     within("form") do
@@ -15,4 +16,5 @@ RSpec.describe "the signin process", :type => :feature do
     expect(page).to have_css '#user-friends'
     expect(page).to have_link 'Add friend'
   end
+
 end

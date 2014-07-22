@@ -3,7 +3,7 @@ class NotificationMailer < ActionMailer::Base
 
   def notification_mailer(notification)
     @notification = notification
-    mail(:subject => "New Notification")
+    mail(:to => "example@example.com", :subject => "New Notification")
   end
 
 end
